@@ -1,4 +1,12 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+import "./BondToken.sol";
+import "./WarrantToken.sol";
+import "./EquityToken.sol";
 
 /**
  * @title TokenSale
@@ -44,7 +52,7 @@ contract TokenSale is Ownable {
         uint256 _bondYieldBasisPoints,
         uint256 _warrantStrikePrice,
         address payable _treasury
-    ) Ownable(msg.sender) {
+    ) {
         bondMaturityPeriod = _bondMaturityDays;
         bondYieldPercentage = _bondYieldBasisPoints;
         warrantStrikePrice = _warrantStrikePrice;
@@ -57,6 +65,7 @@ contract TokenSale is Ownable {
         
         // Set equity token address in warrant contract
         warrantToken.setEquityTokenAddress(address(equityToken));
+         _transferOwnership(msg.sender);
     }
     
     /**

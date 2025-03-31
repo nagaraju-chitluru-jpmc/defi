@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title WarrantToken
@@ -25,10 +31,11 @@ contract WarrantToken is ERC20, ERC20Burnable, Ownable {
         string memory symbol,
         uint256 _strikePrice,
         uint256 _expirationDays
-    ) ERC20(name, symbol) Ownable(msg.sender) {
+    ) ERC20(name, symbol) {
         strikePrice = _strikePrice;
         expirationTimestamp = block.timestamp + (_expirationDays * 1 days);
         // Equity token address will be set later
+         _transferOwnership(msg.sender);
     }
     
     /**

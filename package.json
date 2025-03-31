@@ -1,7 +1,7 @@
 {
   "name": "defi-bond-warrant-system",
   "version": "0.1.0",
-    "description": "A blockchain-based decentralized finance (DeFi) system for companies to raise funds through bond tokens and warrant tokens. This  project demonstrates how traditional financial instruments can be implemented on the blockchain using smart contracts and a React.js frontend.",
+  "description": "A blockchain-based decentralized finance (DeFi) system for companies to raise funds through bond tokens and warrant tokens. This  project demonstrates how traditional financial instruments can be implemented on the blockchain using smart contracts and a React.js frontend.",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -57,7 +57,8 @@
     ]
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "dotenv": "^16.4.7",
     "hardhat": "^2.22.19"
   }
 }

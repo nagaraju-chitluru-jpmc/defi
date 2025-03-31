@@ -13,9 +13,9 @@ import Portfolio from './components/Portfolio';
 import Dashboard from './components/Dashboard';
 
 // Smart contract ABIs
-import BondTokenABI from './contracts/BondToken.json';
-import WarrantTokenABI from './contracts/WarrantToken.json';
-import TokenSaleABI from './contracts/TokenSale.json';
+import BondTokenABI from './contracts/src/backend/contracts/BondToken.sol/BondToken.json';
+import WarrantTokenABI from './contracts/src/backend/contracts/WarrantToken.sol/WarrantToken.json';
+import TokenSaleABI from './contracts/src/backend/contracts/TokenSale.sol/TokenSale.json';
 
 // Contract addresses (would be populated from deployment)
 const CONTRACT_ADDRESSES = {

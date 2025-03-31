@@ -34,10 +34,11 @@ contract BondToken is ERC20, ERC20Burnable, Ownable {
         string memory symbol,
         uint256 _maturityPeriodDays,
         uint256 _yieldBasisPoints
-    ) ERC20(name, symbol) Ownable(msg.sender) {
+    ) ERC20(name, symbol) {
         issuanceTimestamp = block.timestamp;
         maturityPeriod = _maturityPeriodDays * 1 days;
         yieldBasisPoints = _yieldBasisPoints;
+        _transferOwnership(msg.sender);
     }
 
     /**

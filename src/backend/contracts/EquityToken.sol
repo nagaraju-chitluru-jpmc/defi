@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 
 /**
  * @title EquityToken
@@ -16,8 +22,9 @@ contract EquityToken is ERC20, Ownable {
         string memory name,
         string memory symbol,
         uint256 _totalAuthorizedShares
-    ) ERC20(name, symbol) Ownable(msg.sender) {
+    ) ERC20(name, symbol) {
         totalAuthorizedShares = _totalAuthorizedShares;
+         _transferOwnership(msg.sender);
     }
     
     /**
