@@ -1,5 +1,5 @@
 // App.js - Main application component
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
 
@@ -47,8 +47,8 @@ function App() {
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+        // const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // const signer = provider.getSigner();
         const account = await signer.getAddress();
         
         // Initialize contract instances
