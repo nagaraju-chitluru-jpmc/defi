@@ -27,8 +27,8 @@ const CONTRACT_ADDRESSES = {
 
 
 function App() {
-  const [setProvider] = useState(null);
-  const [setSigner] = useState(null);
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
   const [account, setAccount] = useState(null);
   const [contracts, setContracts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -48,70 +48,70 @@ function App() {
   const connectWallet = async () => {
     try {
       if (window.ethereum) {
- // Request account access
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      
-      // Check if accounts array is valid and not empty
-      if (!accounts || accounts.length === 0) {
-        throw new Error("No accounts returned from MetaMask");
-      }
-      
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      
-      // Verify signer is not null before getting address
-      if (!signer) {
-        throw new Error("Failed to get signer from provider");
-      }
-      
-      const account = await signer.getAddress();
+        // Request account access
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         
-        // Initialize contract instances
-        const bondTokenContract = new ethers.Contract(
-          CONTRACT_ADDRESSES.bondToken,
-          BondTokenABI.abi,
-          signer
-        );
+        // Check if accounts array is valid and not empty
+        if (!accounts || accounts.length === 0) {
+          throw new Error("No accounts returned from MetaMask");
+        }
         
-        const warrantTokenContract = new ethers.Contract(
-          CONTRACT_ADDRESSES.warrantToken,
-          WarrantTokenABI.abi,
-          signer
-        );
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
         
-        const tokenSaleContract = new ethers.Contract(
-          CONTRACT_ADDRESSES.tokenSale,
-          TokenSaleABI.abi,
-          signer
-        );
+        // Verify signer is not null before getting address
+        if (!signer) {
+          throw new Error("Failed to get signer from provider");
+        }
         
-        setProvider(provider);
-        setSigner(signer);
-        setAccount(account);
-        setContracts({
-          bondToken: bondTokenContract,
-          warrantToken: warrantTokenContract,
-          tokenSale: tokenSaleContract,
-        });
-        
-        // Setup event listeners
-        window.ethereum.on('accountsChanged', (accounts) => {
-          setAccount(accounts[0]);
-          updateBalances(accounts[0], bondTokenContract, warrantTokenContract);
-        });
-        
-        window.ethereum.on('chainChanged', () => {
-          window.location.reload();
-        });
-        
-        // Load initial data
-        updateBalances(account, bondTokenContract, warrantTokenContract);
-        fetchCompanyMetrics(tokenSaleContract);
-        
-        setIsLoading(false);
-      } else {
-        alert('Please install MetaMask to use this DeFi application');
-      }
+        const account = await signer.getAddress();
+          
+          // Initialize contract instances
+          const bondTokenContract = new ethers.Contract(
+            CONTRACT_ADDRESSES.bondToken,
+            BondTokenABI.abi,
+            signer
+          );
+          
+          const warrantTokenContract = new ethers.Contract(
+            CONTRACT_ADDRESSES.warrantToken,
+            WarrantTokenABI.abi,
+            signer
+          );
+          
+          const tokenSaleContract = new ethers.Contract(
+            CONTRACT_ADDRESSES.tokenSale,
+            TokenSaleABI.abi,
+            signer
+          );
+          
+          setProvider(provider);
+          setSigner(signer);
+          setAccount(account);
+          setContracts({
+            bondToken: bondTokenContract,
+            warrantToken: warrantTokenContract,
+            tokenSale: tokenSaleContract,
+          });
+          
+          // Setup event listeners
+          window.ethereum.on('accountsChanged', (accounts) => {
+            setAccount(accounts[0]);
+            updateBalances(accounts[0], bondTokenContract, warrantTokenContract);
+          });
+          
+          window.ethereum.on('chainChanged', () => {
+            window.location.reload();
+          });
+          
+          // Load initial data
+          updateBalances(account, bondTokenContract, warrantTokenContract);
+          fetchCompanyMetrics(tokenSaleContract);
+          
+          setIsLoading(false);
+        } else {
+          alert('Please install MetaMask to use this DeFi application');
+        }
     } catch (error) {
       console.error('Error connecting to wallet:', error);
     }
