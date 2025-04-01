@@ -48,10 +48,23 @@ function App() {
   const connectWallet = async () => {
     try {
       if (window.ethereum) {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        // const provider = new ethers.providers.Web3Provider(window.ethereum);
-        // const signer = provider.getSigner();
-        const account = await signer.getAddress();
+ // Request account access
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      
+      // Check if accounts array is valid and not empty
+      if (!accounts || accounts.length === 0) {
+        throw new Error("No accounts returned from MetaMask");
+      }
+      
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      
+      // Verify signer is not null before getting address
+      if (!signer) {
+        throw new Error("Failed to get signer from provider");
+      }
+      
+      const account = await signer.getAddress();
         
         // Initialize contract instances
         const bondTokenContract = new ethers.Contract(
