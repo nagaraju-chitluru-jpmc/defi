@@ -19,10 +19,12 @@ import TokenSaleABI from './contracts/src/backend/contracts/TokenSale.sol/TokenS
 
 // Contract addresses (would be populated from deployment)
 const CONTRACT_ADDRESSES = {
-  bondToken: '0x...',
-  warrantToken: '0x...',
-  tokenSale: '0x...',
+  bondToken: '0x871508dA258ACE05A938E9c6b6bD4B5e304eb3de',
+  warrantToken: '0xdf38dE6510c48F9C02861a78688F8eD261a5E387',
+  tokenSale: '0xE8AbAe67628c2801464a7C269467d9eeE3Ab3471',
+  equityToken: '0x8ba6745Ef31687BFfb668AEbA7b8798482fE712F',
 };
+
 
 function App() {
   const [provider, setProvider] = useState(null);
