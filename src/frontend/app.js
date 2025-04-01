@@ -27,8 +27,8 @@ const CONTRACT_ADDRESSES = {
 
 
 function App() {
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
+  const [setProvider] = useState(null);
+  const [setSigner] = useState(null);
   const [account, setAccount] = useState(null);
   const [contracts, setContracts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
