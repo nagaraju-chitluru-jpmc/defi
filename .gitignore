@@ -31,4 +31,5 @@ yarn-error.log*
 .idea
 .vscode
 
-src/frontend/contracts
+src/frontend/contracts/*
+
