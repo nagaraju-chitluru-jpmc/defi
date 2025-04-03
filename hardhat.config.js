@@ -2,8 +2,8 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
+const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x4dc860e0aea1eda40f4f983641e2252d8cc838e1ca5beba5c2ab416b6764bd1c";
+const INFURA_API_KEY = process.env.INFURA_API_KEY || "9611dd177b99458699ef3133fa5480aa";
 
 module.exports = {
   solidity: "0.8.17",
