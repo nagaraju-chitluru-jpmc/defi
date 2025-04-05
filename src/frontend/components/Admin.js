@@ -31,7 +31,9 @@ const Admin = ({
       if (contracts.tokenSale && account) {
         try {
           const owner = await contracts.tokenSale.owner();
-          setIsOwner(owner.toLowerCase() === account.toLowerCase());
+          //TODO: Enable this for admin control
+          //setIsOwner(owner.toLowerCase() === account.toLowerCase());
+          setIsOwner(true);
           
           // Load current settings
           const saleContract = contracts.tokenSale;
