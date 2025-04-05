@@ -29,9 +29,9 @@ const Admin = ({
   useEffect(() => {
     const checkOwner = async () => {
       if (contracts.tokenSale && account) {
-        try {
-          const owner = await contracts.tokenSale.owner();
+        try {          
           //TODO: Enable this for admin control
+          //const owner = await contracts.tokenSale.owner();
           //setIsOwner(owner.toLowerCase() === account.toLowerCase());
           setIsOwner(true);
           
