@@ -161,283 +161,253 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Dashboard */
 .dashboard {
-  margin-bottom: 2rem;
+  padding: 2rem;
 }
 
-.dashboard h2 {
-  margin-bottom: 1.5rem;
-}
-
-.stats-grid {
+.metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .metric-card {
-  background-color: var(--card-color);
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a73e8;
+}
+
+.funding-info {
+  margin-top: 2rem;
+}
+
+.funding-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.step {
+  background: #f7f9fc;
+  padding: 1rem;
   border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
-.metric-card h3 {
-  font-size: 1rem;
-  color: var(--text-light);
-  margin-bottom: 0.5rem;
-}
-
-.metric-card .value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.contracts-info {
-  background-color: var(--card-color);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.contract-item {
-  margin-bottom: 0.75rem;
+.step-number {
+  width: 2rem;
+  height: 2rem;
+  background-color: #1a73e8;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.contract-item strong {
-  min-width: 150px;
-}
-
-.address-text {
-  font-family: monospace;
-  background-color: #f8fafc;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 /* Market Sections (Bond & Warrant) */
-.market-section {
-  margin-bottom: 3rem;
+.bond-market {
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-.market-section h2 {
+.bond-market h2 {
+  font-size: 1.75rem;
   margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #1a237e;
 }
 
-.market-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.market-card {
-  background-color: var(--card-color);
-  border-radius: 0.5rem;
+.info-card {
+  background: #fff;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.market-card h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: var(--primary-color);
-}
-
-.market-info {
-  margin-bottom: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
 }
 
 .info-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .stat {
-  text-align: center;
+  flex: 1;
+  min-width: 180px;
 }
 
 .stat-label {
-  font-size: 0.875rem;
-  color: var(--text-light);
+  font-size: 0.9rem;
+  color: #777;
   margin-bottom: 0.25rem;
 }
 
 .stat-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a73e8;
 }
 
-.maturity-status,
-.expiration-status {
-  background-color: #f8fafc;
-  border-radius: 0.25rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.matured, .active {
-  color: var(--success-color);
-  font-weight: 700;
-}
-
-.pending, .expired {
-  color: var(--error-color);
-  font-weight: 700;
-}
-
-.countdown {
-  font-weight: 700;
-  font-family: monospace;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.form-control {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
-}
-
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: inline-block;
-  text-align: center;
-}
-
-.btn:hover {
-  background-color: var(--primary-light);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.balance-info {
-  background-color: #f8fafc;
-  border-radius: 0.25rem;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.info-card {
-  background-color: var(--card-color);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.info-card h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.faq-item {
-  margin-bottom: 1.5rem;
-}
-
-.faq-item h4 {
-  margin-bottom: 0.5rem;
-  color: var(--primary-color);
-}
-
-/* Portfolio */
-.portfolio {
-  margin-bottom: 3rem;
-}
-
-.portfolio h2 {
-  margin-bottom: 1.5rem;
-}
-
-.holdings-section {
+.market-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   margin-bottom: 2rem;
 }
 
-.holdings-table {
-  width: 100%;
-  border-collapse: collapse;
+.action-card {
+  background: #f9f9ff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.input-group {
   margin-top: 1rem;
-  font-size: 0.875rem;
 }
 
-.holdings-table th,
-.holdings-table td {
-  padding: 0.75rem;
+.input-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.calculation {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.action-button {
+  margin-top: 1rem;
+  background: #1a73e8;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.action-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.maturity-status {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.matured {
+  color: green;
+  font-weight: bold;
+}
+
+.pending {
+  color: orange;
+  font-weight: bold;
+}
+
+.countdown {
+  font-weight: 600;
+}
+
+.note {
+  font-style: italic;
+  margin-top: 0.5rem;
+  color: #888;
+}
+
+.bond-faq {
+  margin-top: 3rem;
+}
+
+.faq-list {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.faq-item {
+  background-color: #fff;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.faq-question {
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a237e;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
   text-align: left;
-  border-bottom: 1px solid var(--border-color);
 }
 
-.holdings-table th {
-  background-color: #f8fafc;
+.faq-answer {
+  color: #444;
+  line-height: 1.6;
+  padding-top: 0.5rem;
+}
+
+.faq-toggle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a73e8;
+}
+
+/* warrant bonds */
+.warrant-market {
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.warrant-market h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
-  color: var(--text-light);
+  color: #1a237e;
 }
 
-.holdings-table tr:last-child td {
-  border-bottom: none;
-}
+/* Reuse the following from BondMarket styles:
+   .info-card, .info-stats, .stat, .stat-label, .stat-value,
+   .market-actions, .action-card, .input-group, .action-button,
+   .calculation, .note, .faq-list, .faq-item, .faq-question, .faq-answer, .faq-toggle
+*/
 
-.holdings-table tr:hover td {
-  background-color: #f8fafc;
-}
 
-.status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
+/* Portfolio */
 
-.badge-success {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.badge-warning {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.badge-danger {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
 
 /* Admin Panel Styles */
 .admin-panel {

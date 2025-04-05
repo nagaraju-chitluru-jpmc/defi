@@ -18,6 +18,7 @@ const BondMarket = ({
     maturityDate: 'N/A'
   });
   const [countdownString, setCountdownString] = useState('');
+  const [activeFaq, setActiveFaq] = useState(null);
   
   // Get bond maturity information
   useEffect(() => {
@@ -76,6 +77,22 @@ const BondMarket = ({
     const interest = principal * (bondYield / 100);
     return (principal + interest).toFixed(4);
   };
+
+  
+  const faqList = [
+    {
+      question: 'What are bond tokens?',
+      answer: 'Bond tokens represent debt instruments that pay a fixed yield at maturity. When you purchase a bond token, you are essentially lending money to the issuer in exchange for a guaranteed return.',
+    },
+    {
+      question: 'How do I earn returns?',
+      answer: 'Bond tokens automatically accrue value over time. When your bonds reach maturity, you can redeem them to receive your initial investment plus the promised yield.'
+    },
+    {
+      question: 'Can I sell my bonds before maturity?',
+      answer: 'Yes, bond tokens are standard ERC20 tokens that can be transferred to other users. However, the bond maturity is tied to the purchase date, so the new owner will inherit your maturity timeline.'
+    }
+  ];
   
   return (
     <div className="bond-market">
@@ -104,8 +121,6 @@ const BondMarket = ({
       <div className="bond-info">
         <div className="info-card">
           <h3>Bond Terms</h3>
-          <p><strong>Yield:</strong> {bondYield}% fixed return</p>
-          <p><strong>Maturity:</strong> {bondMaturity} days</p>
           <p><strong>Value:</strong> 1 Bond Token = 1 ETH</p>
           <p><strong>At Maturity:</strong> 1 Bond Token = {(1 + (bondYield/100)).toFixed(4)} ETH</p>
         </div>
@@ -185,24 +200,19 @@ const BondMarket = ({
         </div>
       </div>
       
+      {/* FAQ */}
       <div className="bond-faq">
         <h3>Frequently Asked Questions</h3>
-        <div className="faq-item">
-          <h4>What are bond tokens?</h4>
-          <p>Bond tokens represent debt instruments that pay a fixed yield at maturity. 
-             When you purchase a bond token, you're essentially lending money to the issuer 
-             in exchange for a guaranteed return.</p>
-        </div>
-        <div className="faq-item">
-          <h4>How do I earn returns?</h4>
-          <p>Bond tokens automatically accrue value over time. When your bonds reach maturity, 
-             you can redeem them to receive your initial investment plus the promised yield.</p>
-        </div>
-        <div className="faq-item">
-          <h4>Can I sell my bonds before maturity?</h4>
-          <p>Yes, bond tokens are standard ERC20 tokens that can be transferred to other users. 
-             However, the bond maturity is tied to the purchase date, so the new owner will inherit 
-             your maturity timeline.</p>
+        <div className="faq-list">
+          {faqList.map((item, i) => (
+            <div key={i} className="faq-item">
+              <button className="faq-question" onClick={() => setActiveFaq(i === activeFaq ? null : i)}>
+                {item.question}
+                <span className="faq-toggle">{activeFaq === i ? '−' : '+'}</span>
+              </button>
+              {activeFaq === i && <p className="faq-answer">{item.answer}</p>}
+            </div>
+          ))}
         </div>
       </div>
     </div>

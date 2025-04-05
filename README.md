@@ -1,4 +1,4 @@
-# DeFi Bond & Warrant System
+# Bond & Warrant DeFi System
 
 A blockchain-based decentralized finance (DeFi) system for companies to raise funds through bond tokens and warrant tokens. This  project demonstrates how traditional financial instruments can be implemented on the blockchain using smart contracts and a React.js frontend.
 

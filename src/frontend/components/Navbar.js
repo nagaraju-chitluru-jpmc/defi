@@ -5,7 +5,7 @@ const Navbar = ({ activeTab, setActiveTab, isConnected }) => {
   return (
     <nav className="navbar">
       <div className="container">
-        <div className="navbar-brand">DeFi Bond & Warrant System</div>
+        <div className="navbar-brand">Bond & Warrant DeFi System</div>
         
         {isConnected && (
           <ul className="navbar-nav">

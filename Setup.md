@@ -1,6 +1,6 @@
-# Step-by-Step Setup Guide for DeFi Bond & Warrant System
+# Step-by-Step Setup Guide for Bond & Warrant DeFi System
 
-This guide provides detailed instructions to set up and run the DeFi Bond & Warrant System project.
+This guide provides detailed instructions to set up and run the Bond & Warrant DeFi System project.
 
 ## 1. Project Setup
 
@@ -130,11 +130,11 @@ Create `index.html` in the `public` directory:
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="DeFi Bond & Warrant System"
+      content="Bond & Warrant DeFi System"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>DeFi Bond & Warrant System</title>
+    <title>Bond & Warrant DeFi System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>

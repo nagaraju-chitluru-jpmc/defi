@@ -3,7 +3,7 @@ import React from 'react';
 const ConnectWallet = ({ connectWallet }) => {
   return (
     <div className="connect-wallet">
-      <h2>Welcome to the DeFi Bond & Warrant System</h2>
+      <h2>Welcome to the Bond & Warrant DeFi System</h2>
       <p>This platform allows companies to raise funds through bond tokens and warrant tokens on the blockchain.</p>
       
       <div className="features">
