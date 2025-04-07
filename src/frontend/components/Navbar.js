@@ -1,77 +1,41 @@
 // components/Navbar.js
 import React from 'react';
 
-const Navbar = ({ activeTab, setActiveTab, isConnected }) => {
+const Navbar = ({ isConnected, account, bondBalance }) => {
   return (
-    <nav className="navbar">
-      <div className="container">
-        <div className="navbar-brand">Bond & Warrant DeFi System</div>
-        
-        {isConnected && (
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a 
-                href="#" 
-                className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab('dashboard');
-                }}
-              >
-                Dashboard
-              </a>
-            </li>
-            <li className="nav-item">
-              <a 
-                href="#" 
-                className={`nav-link ${activeTab === 'bonds' ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab('bonds');
-                }}
-              >
-                Bond Market
-              </a>
-            </li>
-            <li className="nav-item">
-              <a 
-                href="#" 
-                className={`nav-link ${activeTab === 'warrants' ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab('warrants');
-                }}
-              >
-                Warrant Market
-              </a>
-            </li>
-            <li className="nav-item">
-              <a 
-                href="#" 
-                className={`nav-link ${activeTab === 'portfolio' ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab('portfolio');
-                }}
-              >
-                My Portfolio
-              </a>
-            </li>
-            <li className="nav-item">
-              <a 
-                href="#" 
-                className={`nav-link ${activeTab === 'admin' ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab('admin');
-                }}
-              >
-                Admin
-              </a>
-            </li>
-          </ul>
-        )}
+    <nav className="top-navbar">
+      <div className="page-title">
+        {/* This will change based on the active tab */}
+        <h1>Dashboard</h1>
       </div>
+      
+      {isConnected && (
+        <div className="user-section">
+          <div className="notifications">
+            <span className="notification-icon">🔔</span>
+            <span className="notification-count">1</span>
+          </div>
+          
+          <div className="message-center">
+            <span className="message-icon">✉️</span>
+          </div>
+          
+          <div className="user-info">
+            <span className="user-name">
+              {account ? `${account.substring(0, 6)}...${account.substring(38)}` : 'Connect Wallet'}
+            </span>
+            <div className="user-avatar">
+              {/* This could be a profile picture or a wallet icon */}
+              👤
+            </div>
+            {account && (
+              <button className="logout-button" onClick={() => window.location.reload()}>
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
