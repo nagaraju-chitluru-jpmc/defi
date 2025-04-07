@@ -10,15 +10,61 @@ const BondMarket = ({
   checkBondMaturity,
   contractBalance
 }) => {
-  const [purchaseAmount, setPurchaseAmount] = useState(1);
   const [redeemAmount, setRedeemAmount] = useState(0);
   const [maturityStatus, setMaturityStatus] = useState({
     hasMatured: false,
     timeToMaturity: 0,
     maturityDate: 'N/A'
   });
-  const [countdownString, setCountdownString] = useState('');
   const [activeFaq, setActiveFaq] = useState(null);
+  
+  // Available bonds to invest in
+  const availableBonds = [
+    {
+      id: 1,
+      name: '1 Treasury Bond',
+      type: 'Government',
+      totalAmount: 1999.00,
+      raisedAmount: 1999.00,
+      interestRate: 5.98,
+      duration: 9, // months
+      startDate: '02-Apr-2025',
+      status: 'Running'
+    },
+    {
+      id: 2,
+      name: '2 Corporate Bond',
+      type: 'Corporate',
+      totalAmount: 4135.00,
+      raisedAmount: 4135.00,
+      interestRate: 6.15,
+      duration: 6, // months
+      startDate: '28-Mar-2025',
+      status: 'Running'
+    },
+    {
+      id: 3,
+      name: '3 Municipal Bond',
+      type: 'Government',
+      totalAmount: 4997.00,
+      raisedAmount: 4997.00,
+      interestRate: 6.30,
+      duration: 12, // months
+      startDate: '26-Mar-2025',
+      status: 'Running'
+    },
+    {
+      id: 4,
+      name: '4 High-Yield Bond',
+      type: 'Corporate',
+      totalAmount: 2164.00,
+      raisedAmount: 2164.00,
+      interestRate: 6.50,
+      duration: 9, // months
+      startDate: '22-Mar-2025',
+      status: 'Running'
+    }
+  ];
   
   // Get bond maturity information
   useEffect(() => {
@@ -34,33 +80,8 @@ const BondMarket = ({
     return () => clearInterval(interval);
   }, [checkBondMaturity, bondBalance]);
   
-  // Format countdown timer
-  useEffect(() => {
-    if (maturityStatus.timeToMaturity > 0) {
-      const updateCountdown = () => {
-        const seconds = Math.max(0, maturityStatus.timeToMaturity - ((Date.now() / 1000) - (Date.now() / 1000) % 1));
-        const days = Math.floor(seconds / 86400);
-        const hours = Math.floor((seconds % 86400) / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        
-        setCountdownString(`${days}d ${hours}h ${minutes}m`);
-      };
-      
-      updateCountdown();
-      const interval = setInterval(updateCountdown, 60000);
-      
-      return () => clearInterval(interval);
-    } else {
-      setCountdownString('Matured');
-    }
-  }, [maturityStatus]);
-  
-  const handlePurchase = () => {
-    if (purchaseAmount <= 0) {
-      alert('Please enter a valid amount');
-      return;
-    }
-    purchaseBonds(purchaseAmount);
+  const handlePurchase = (amount, bondName) => {
+    purchaseBonds(amount, bondName);
   };
   
   const handleRedeem = () => {
@@ -72,13 +93,12 @@ const BondMarket = ({
   };
   
   // Calculate expected return
-  const calculateReturn = (amount) => {
+  const calculateReturn = (amount, interestRate) => {
     const principal = parseFloat(amount);
-    const interest = principal * (bondYield / 100);
-    return (principal + interest).toFixed(4);
+    const interest = principal * (interestRate / 100);
+    return (principal + interest).toFixed(2);
   };
 
-  
   const faqList = [
     {
       question: 'What are bond tokens?',
@@ -96,109 +116,105 @@ const BondMarket = ({
   
   return (
     <div className="bond-market">
-      <h2>Bond Token Market</h2>
+      <h2>Bond Market</h2>
       
-      <div className="market-info">
-        <div className="info-card">
-          <h3>Market Overview</h3>
-          <div className="info-stats">
-            <div className="stat">
-              <p className="stat-label">Current Yield</p>
-              <p className="stat-value">{bondYield}%</p>
-            </div>
-            <div className="stat">
-              <p className="stat-label">Maturity Period</p>
-              <p className="stat-value">{bondMaturity} days</p>
-            </div>
-            <div className="stat">
-              <p className="stat-label">Redemption Fund</p>
-              <p className="stat-value">{contractBalance} ETH</p>
-            </div>
-          </div>
+      <div className="search-filter">
+        <input type="text" placeholder="Search" className="search-input" />
+        <div className="filter-options">
+          <button className="filter-button active">All</button>
+          <button className="filter-button">New</button>
+          <button className="filter-button">Ongoing</button>
+          <button className="filter-button">Ended</button>
         </div>
       </div>
       
-      <div className="bond-info">
-        <div className="info-card">
-          <h3>Bond Terms</h3>
-          <p><strong>Value:</strong> 1 Bond Token = 1 ETH</p>
-          <p><strong>At Maturity:</strong> 1 Bond Token = {(1 + (bondYield/100)).toFixed(4)} ETH</p>
-        </div>
+      <div className="bond-cards">
+        {availableBonds.map(bond => (
+          <div key={bond.id} className="bond-card">
+            <div className="bond-status">{bond.status}</div>
+            <h3>{bond.name}</h3>
+            <div className="bond-amount">
+              ${bond.raisedAmount.toFixed(2)} / ${bond.totalAmount.toFixed(2)} ({Math.floor((bond.raisedAmount / bond.totalAmount) * 100)}%)
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress" 
+                style={{width: `${(bond.raisedAmount / bond.totalAmount) * 100}%`}}
+              ></div>
+            </div>
+            
+            <div className="bond-details">
+              <div className="detail-row">
+                <span className="detail-label">Loan Start Date</span>
+                <span className="detail-value">{bond.startDate}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Bond Interest</span>
+                <span className="detail-value">{bond.interestRate}% nett p.a.</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Duration</span>
+                <span className="detail-value">{bond.duration} months</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Fully Funded</span>
+              </div>
+            </div>
+            
+            <button 
+              className="purchase-button" 
+              onClick={() => handlePurchase(1, bond.name)}
+            >
+              Purchase Bond
+            </button>
+          </div>
+        ))}
       </div>
       
-      <div className="market-actions">
-        <div className="action-card">
-          <h3>Purchase Bonds</h3>
-          <p>Purchase bond tokens to earn fixed yield.</p>
-          
-          <div className="input-group">
-            <label>Amount (ETH):</label>
-            <input 
-              type="number" 
-              min="0.1"
-              step="0.1"
-              value={purchaseAmount}
-              onChange={(e) => setPurchaseAmount(e.target.value)}
-            />
-          </div>
-          
-          <div className="calculation">
-            <p>Cost: {purchaseAmount} ETH</p>
-            <p>Expected Return: {calculateReturn(purchaseAmount)} ETH</p>
-            <p>Profit: {(calculateReturn(purchaseAmount) - purchaseAmount).toFixed(4)} ETH</p>
-            <p>Maturity Date: {new Date(Date.now() + (bondMaturity * 86400 * 1000)).toLocaleDateString()}</p>
-          </div>
-          
-          <button className="action-button" onClick={handlePurchase}>
-            Purchase Bond Tokens
-          </button>
-        </div>
-        
-        <div className="action-card">
+      {/* Redemption Section */}
+      {parseFloat(bondBalance) > 0 && (
+        <div className="redeem-section">
           <h3>Redeem Mature Bonds</h3>
-          <p>Redeem your matured bond tokens to receive principal plus yield.</p>
-          
-          <div className="maturity-status">
-            <p>Your Bonds: <span className={maturityStatus.hasMatured ? 'matured' : 'pending'}>
-              {maturityStatus.hasMatured ? 'MATURED' : 'PENDING'}
-            </span></p>
-            {!maturityStatus.hasMatured && maturityStatus.timeToMaturity > 0 && (
-              <>
-                <p>Time until maturity: <span className="countdown">{countdownString}</span></p>
+          <div className="redeem-card">
+            <div className="maturity-status">
+              <p>Your Bonds: <span className={maturityStatus.hasMatured ? 'matured' : 'pending'}>
+                {maturityStatus.hasMatured ? 'MATURED' : 'PENDING'}
+              </span></p>
+              {!maturityStatus.hasMatured && maturityStatus.timeToMaturity > 0 && (
                 <p>Maturity date: {maturityStatus.maturityDate}</p>
-              </>
+              )}
+            </div>
+            
+            <div className="input-group">
+              <label>Amount (Bond Tokens):</label>
+              <input 
+                type="number"
+                min="0.1"
+                step="0.1"
+                max={bondBalance}
+                value={redeemAmount}
+                onChange={(e) => setRedeemAmount(e.target.value)}
+              />
+            </div>
+            
+            <div className="calculation">
+              <p>Your Balance: {bondBalance} Bond Tokens</p>
+              <p>Redemption Value: {calculateReturn(redeemAmount, bondYield)} ETH</p>
+            </div>
+            
+            <button 
+              className="redeem-button" 
+              onClick={handleRedeem}
+              disabled={bondBalance <= 0 || !maturityStatus.hasMatured}
+            >
+              Redeem Bond Tokens
+            </button>
+            {!maturityStatus.hasMatured && bondBalance > 0 && (
+              <p className="note">Note: Bonds can only be redeemed after the maturity period.</p>
             )}
           </div>
-          
-          <div className="input-group">
-            <label>Amount (Bond Tokens):</label>
-            <input 
-              type="number"
-              min="0.1"
-              step="0.1"
-              max={bondBalance}
-              value={redeemAmount}
-              onChange={(e) => setRedeemAmount(e.target.value)}
-            />
-          </div>
-          
-          <div className="calculation">
-            <p>Your Balance: {bondBalance} Bond Tokens</p>
-            <p>Redemption Value: {calculateReturn(redeemAmount)} ETH</p>
-          </div>
-          
-          <button 
-            className="action-button" 
-            onClick={handleRedeem}
-            disabled={bondBalance <= 0 || !maturityStatus.hasMatured}
-          >
-            Redeem Bond Tokens
-          </button>
-          {!maturityStatus.hasMatured && bondBalance > 0 && (
-            <p className="note">Note: Bonds can only be redeemed after the maturity period.</p>
-          )}
         </div>
-      </div>
+      )}
       
       {/* FAQ */}
       <div className="bond-faq">

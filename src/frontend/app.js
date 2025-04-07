@@ -1,27 +1,25 @@
-// App.js - Main application component updated for Diamond Pattern
+// App.js - Main application component updated for Bond Market
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
 
 // Components
 import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import ConnectWallet from './components/ConnectWallet';
 import BondMarket from './components/BondMarket';
-import WarrantMarket from './components/WarrantMarket';
 import Portfolio from './components/Portfolio';
 import Dashboard from './components/Dashboard';
 import Admin from './components/Admin';
 
 // Import ABI for facets
 import BondTokenFacetABI from './contracts/src/backend/contracts/BondTokenFacet.sol/BondTokenFacet.json';
-import WarrantTokenFacetABI from './contracts/src/backend/contracts/WarrantTokenFacet.sol/WarrantTokenFacet.json';
 import TokenSaleFacetABI from './contracts/src/backend/contracts/TokenSaleFacet.sol/TokenSaleFacet.json';
 import EquityTokenFacetABI from './contracts/src/backend/contracts/EquityTokenFacet.sol/EquityTokenFacet.json';
 
 // Contract addresses (update with your deployed diamond addresses)
 const CONTRACT_ADDRESSES = {
   bondDiamond: '0x43e0F52563d32eF4815184Bb464981b1232b4bc0',
-  warrantDiamond: '0x554d6dD53d0922D9e0a29C39a10FAd4f97C00f86',
   equityDiamond: '0x1234567890123456789012345678901234567890', // Update with actual address
   tokenSaleDiamond: '0x49aa5A5dD68927B6EF8D0b0cdf42057cF08C3f8A',
 };
@@ -34,7 +32,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [bondBalance, setBondBalance] = useState(0);
-  const [warrantBalance, setWarrantBalance] = useState(0);
   const [equityBalance, setEquityBalance] = useState(0);
   const [connectionError, setConnectionError] = useState('');
   const [companyMetrics, setCompanyMetrics] = useState({
@@ -42,11 +39,8 @@ function App() {
     activeBonds: 0,
     bondMaturity: 180, // days
     bondYield: 8.5, // percentage
-    warrantsIssued: 0,
-    warrantStrikePrice: 0,
     contractBalance: 0, // Added for bond redemption fund
     totalBondRedemptions: 0, // Added tracking stats
-    totalWarrantsExercised: 0, // Added tracking stats
   });
 
   // Connect to wallet and setup contracts
@@ -78,12 +72,6 @@ function App() {
         BondTokenFacetABI.abi,
         signer
       );
-      
-      const warrantTokenContract = new ethers.Contract(
-        CONTRACT_ADDRESSES.warrantDiamond,
-        WarrantTokenFacetABI.abi,
-        signer
-      );
 
       const equityTokenContract = new ethers.Contract(
         CONTRACT_ADDRESSES.equityDiamond,
@@ -102,7 +90,6 @@ function App() {
       setAccount(account);
       setContracts({
         bondToken: bondTokenContract,
-        warrantToken: warrantTokenContract,
         equityToken: equityTokenContract,
         tokenSale: tokenSaleContract,
       });
@@ -116,7 +103,7 @@ function App() {
             setConnectionError('Wallet disconnected');
           } else {
             setAccount(newAccounts[0]);
-            updateBalances(newAccounts[0], bondTokenContract, warrantTokenContract, equityTokenContract);
+            updateBalances(newAccounts[0], bondTokenContract, equityTokenContract);
           }
         });
         
@@ -126,7 +113,7 @@ function App() {
       }
       
       // Load initial data
-      await updateBalances(account, bondTokenContract, warrantTokenContract, equityTokenContract);
+      await updateBalances(account, bondTokenContract, equityTokenContract);
       await fetchCompanyMetrics(tokenSaleContract);
       
       setIsLoading(false);
@@ -137,11 +124,10 @@ function App() {
   };
   
   // Update token balances
-  const updateBalances = async (account, bondContract, warrantContract, equityContract) => {
-    if (account && bondContract && warrantContract) {
+  const updateBalances = async (account, bondContract, equityContract) => {
+    if (account && bondContract) {
       try {
         const bondBalance = await bondContract.balanceOf(account);
-        const warrantBalance = await warrantContract.balanceOf(account);
         
         // Get equity balance using the equity contract
         let equityBalance = ethers.BigNumber.from(0);
@@ -150,7 +136,6 @@ function App() {
         }
         
         setBondBalance(ethers.utils.formatEther(bondBalance));
-        setWarrantBalance(ethers.utils.formatEther(warrantBalance));
         setEquityBalance(ethers.utils.formatEther(equityBalance));
       } catch (error) {
         console.error('Error updating balances:', error);
@@ -167,10 +152,7 @@ function App() {
         const activeBonds = await saleContract.activeBondCount();
         const bondMaturity = await saleContract.bondMaturityPeriod();
         const bondYield = await saleContract.bondYieldPercentage();
-        const warrantsIssued = await saleContract.totalWarrantsIssued();
-        const warrantStrike = await saleContract.warrantStrikePrice();
         const totalBondRedemptions = await saleContract.totalBondRedemptions();
-        const totalWarrantsExercised = await saleContract.totalWarrantsExercised();
         
         // Get contract balance
         const contractBalance = await provider.getBalance(saleContract.address);
@@ -180,11 +162,8 @@ function App() {
           activeBonds: activeBonds.toNumber(),
           bondMaturity: bondMaturity.toNumber() / 86400, // Convert seconds to days
           bondYield: bondYield.toNumber() / 100, // Convert basis points to percentage
-          warrantsIssued: warrantsIssued.toNumber(),
-          warrantStrikePrice: ethers.utils.formatEther(warrantStrike),
           contractBalance: ethers.utils.formatEther(contractBalance),
           totalBondRedemptions: totalBondRedemptions.toNumber(),
-          totalWarrantsExercised: totalWarrantsExercised.toNumber(),
         });
       } catch (error) {
         console.error('Error fetching company metrics:', error);
@@ -193,7 +172,7 @@ function App() {
   };
   
   // Purchase bond tokens
-  const purchaseBonds = async (amount) => {
+  const purchaseBonds = async (amount, bondType) => {
     if (contracts.tokenSale) {
       try {
         setIsLoading(true);
@@ -202,34 +181,12 @@ function App() {
         });
         await tx.wait();
         
-        updateBalances(account, contracts.bondToken, contracts.warrantToken, contracts.equityToken);
+        updateBalances(account, contracts.bondToken, contracts.equityToken);
         fetchCompanyMetrics(contracts.tokenSale);
-        alert(`Successfully purchased ${amount} bond tokens!`);
+        alert(`Successfully purchased ${amount} ${bondType} bonds!`);
       } catch (error) {
         console.error('Error purchasing bonds:', error);
         alert('Failed to purchase bond tokens: ' + (error.data?.message || error.message || "Unknown error"));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-  
-  // Purchase warrant tokens
-  const purchaseWarrants = async (amount) => {
-    if (contracts.tokenSale) {
-      try {
-        setIsLoading(true);
-        const tx = await contracts.tokenSale.purchaseWarrants({
-          value: ethers.utils.parseEther(amount.toString())
-        });
-        await tx.wait();
-        
-        updateBalances(account, contracts.bondToken, contracts.warrantToken, contracts.equityToken);
-        fetchCompanyMetrics(contracts.tokenSale);
-        alert(`Successfully purchased ${amount} warrant tokens!`);
-      } catch (error) {
-        console.error('Error purchasing warrants:', error);
-        alert('Failed to purchase warrant tokens: ' + (error.data?.message || error.message || "Unknown error"));
       } finally {
         setIsLoading(false);
       }
@@ -254,47 +211,12 @@ function App() {
         );
         await tx.wait();
         
-        updateBalances(account, contracts.bondToken, contracts.warrantToken, contracts.equityToken);
+        updateBalances(account, contracts.bondToken, contracts.equityToken);
         fetchCompanyMetrics(contracts.tokenSale);
         alert(`Successfully redeemed ${amount} bond tokens!`);
       } catch (error) {
         console.error('Error redeeming bonds:', error);
         alert('Failed to redeem bond tokens: ' + (error.data?.message || error.message || "Bonds may not have matured yet."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-  
-  // Exercise warrants
-  const exerciseWarrants = async (amount) => {
-    if (contracts.tokenSale && contracts.warrantToken) {
-      try {
-        setIsLoading(true);
-        // First approve the token sale contract to spend warrant tokens
-        const approveTx = await contracts.warrantToken.approve(
-          CONTRACT_ADDRESSES.tokenSaleDiamond,
-          ethers.utils.parseEther(amount.toString())
-        );
-        await approveTx.wait();
-        
-        // Calculate the total ETH needed to exercise the warrants
-        const strikePrice = ethers.utils.parseEther(companyMetrics.warrantStrikePrice);
-        const totalCost = strikePrice.mul(ethers.utils.parseEther(amount.toString())).div(ethers.utils.parseEther("1"));
-        
-        // Then exercise the warrants
-        const tx = await contracts.tokenSale.exerciseWarrants(
-          ethers.utils.parseEther(amount.toString()),
-          { value: totalCost }
-        );
-        await tx.wait();
-        
-        updateBalances(account, contracts.bondToken, contracts.warrantToken, contracts.equityToken);
-        fetchCompanyMetrics(contracts.tokenSale);
-        alert(`Successfully exercised ${amount} warrant tokens!`);
-      } catch (error) {
-        console.error('Error exercising warrants:', error);
-        alert('Failed to exercise warrant tokens: ' + (error.data?.message || error.message || "Unknown error"));
       } finally {
         setIsLoading(false);
       }
@@ -329,118 +251,75 @@ function App() {
       maturityDate: 'N/A'
     };
   };
-  
-  // Check if warrants have expired
-  const checkWarrantExpiration = async () => {
-    if (contracts.warrantToken) {
-      try {
-        const hasExpired = await contracts.warrantToken.hasExpired();
-        const timeToExpiration = await contracts.warrantToken.timeToExpiration();
-        
-        return {
-          hasExpired,
-          timeToExpiration: timeToExpiration.toNumber(),
-          expirationDate: new Date(Date.now() + (timeToExpiration.toNumber() * 1000)).toLocaleDateString()
-        };
-      } catch (error) {
-        console.error('Error checking warrant expiration:', error);
-        return {
-          hasExpired: true,
-          timeToExpiration: 0,
-          expirationDate: 'Unknown'
-        };
-      }
-    }
-    
-    return {
-      hasExpired: true,
-      timeToExpiration: 0,
-      expirationDate: 'N/A'
-    };
-  };
 
   return (
     <div className="app">
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab}
-        isConnected={!!account}
-      />
+      {account && <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />}
       
-      <main className="container">
-        {!account ? (
-          <ConnectWallet 
-            connectWallet={connectWallet} 
-            error={connectionError}
-          />
-        ) : (
-          <>
-            <div className="account-info">
-              <p>Connected: {account.substring(0, 6)}...{account.substring(38)}</p>
-              <p>Bond Balance: {bondBalance}</p>
-              <p>Warrant Balance: {warrantBalance}</p>
-              {parseFloat(equityBalance) > 0 && <p>Equity Balance: {equityBalance}</p>}
-            </div>
-            
-            {isLoading ? (
-              <div className="loading">Loading...</div>
-            ) : (
-              <>
-                {activeTab === 'dashboard' && (
-                  <Dashboard 
-                    companyMetrics={companyMetrics} 
-                    contractAddresses={CONTRACT_ADDRESSES}
-                  />
-                )}
-                
-                {activeTab === 'bonds' && (
-                  <BondMarket 
-                    purchaseBonds={purchaseBonds} 
-                    redeemBonds={redeemBonds}
-                    bondBalance={bondBalance}
-                    bondYield={companyMetrics.bondYield}
-                    bondMaturity={companyMetrics.bondMaturity}
-                    checkBondMaturity={checkBondMaturity}
-                    contractBalance={companyMetrics.contractBalance}
-                  />
-                )}
-                
-                {activeTab === 'warrants' && (
-                  <WarrantMarket 
-                    purchaseWarrants={purchaseWarrants} 
-                    exerciseWarrants={exerciseWarrants}
-                    warrantBalance={warrantBalance}
-                    strikePrice={companyMetrics.warrantStrikePrice}
-                    checkWarrantExpiration={checkWarrantExpiration}
-                  />
-                )}
-                
-                {activeTab === 'portfolio' && (
-                  <Portfolio 
-                    bondBalance={bondBalance}
-                    warrantBalance={warrantBalance}
-                    equityBalance={equityBalance}
-                    bondYield={companyMetrics.bondYield}
-                    strikePrice={companyMetrics.warrantStrikePrice}
-                    account={account}
-                    checkBondMaturity={checkBondMaturity}
-                    checkWarrantExpiration={checkWarrantExpiration}
-                  />
-                )}
-                
-                {activeTab === 'admin' && (
-                  <Admin 
-                    contracts={contracts}
-                    account={account}
-                    companyMetrics={companyMetrics}
-                    fetchCompanyMetrics={fetchCompanyMetrics}
-                  />
-                )}
-              </>
-            )}
-          </>
-        )}
-      </main>
+      <div className="main-content">
+        <Navbar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+          isConnected={!!account}
+          account={account}
+          bondBalance={bondBalance}
+        />
+        
+        <main className="container">
+          {!account ? (
+            <ConnectWallet 
+              connectWallet={connectWallet} 
+              error={connectionError}
+            />
+          ) : (
+            <>
+              {isLoading ? (
+                <div className="loading">Loading...</div>
+              ) : (
+                <>
+                  {activeTab === 'dashboard' && (
+                    <Dashboard 
+                      companyMetrics={companyMetrics} 
+                      contractAddresses={CONTRACT_ADDRESSES}
+                    />
+                  )}
+                  
+                  {activeTab === 'bonds' && (
+                    <BondMarket 
+                      purchaseBonds={purchaseBonds} 
+                      redeemBonds={redeemBonds}
+                      bondBalance={bondBalance}
+                      bondYield={companyMetrics.bondYield}
+                      bondMaturity={companyMetrics.bondMaturity}
+                      checkBondMaturity={checkBondMaturity}
+                      contractBalance={companyMetrics.contractBalance}
+                    />
+                  )}
+                  
+                  {activeTab === 'portfolio' && (
+                    <Portfolio 
+                      bondBalance={bondBalance}
+                      equityBalance={equityBalance}
+                      bondYield={companyMetrics.bondYield}
+                      account={account}
+                      checkBondMaturity={checkBondMaturity}
+                    />
+                  )}
+                  
+                  {activeTab === 'admin' && (
+                    <Admin 
+                      contracts={contracts}
+                      account={account}
+                      companyMetrics={companyMetrics}
+                      fetchCompanyMetrics={fetchCompanyMetrics}
+                    />
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
